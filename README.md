@@ -78,7 +78,7 @@ npm run dev
 
 | # | דרישה | איפה ממומש |
 |---|---|---|
-| 1 | סימולטור מצוקה ב-WEB ללא חומרה | `/simulator` + מנוע האירועים `server/src/routes/incidents.js` |
+| 1 | סימולטור מצוקה ב-WEB ללא חומרה | `/simulator` + מנוע האירועים `server/src/routes/incidents.js`; «עדכון שקט» מודגם בכפתור בלוח הבקרה |
 | 2 | ברירת מחדל עברית + הסברים | כל האתר RTL עברית (`web/app/layout.jsx`), עמוד `/guide` |
 | 3 | ניהול אדמין נוח | `/admin` — עריכת תוכן, מתנדבים, התראות, קונפיג |
 | 4 | עמוד בית: LoRa ב-3 שורות + דיאגרמה (LoRa+GPS / SMS) | `web/app/page.jsx` + `components/home/DistressFlowDiagram.jsx` |
@@ -118,6 +118,7 @@ npm run dev
 | SQLite | על דיסק ה-Render | נזרע אוטומטית בעלייה אם ריק |
 
 הוראות פריסה מפורטות צעד-אחר-צעד: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+תוכן מוכן למצגת ההגנה (כולל שקף הבעיות הידועות): [docs/SLIDES.md](docs/SLIDES.md).
 
 ## בעיות ידועות (גילוי נאות)
 
