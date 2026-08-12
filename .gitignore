@@ -15,6 +15,9 @@ dist/
 server/data/
 .mongodb-binaries/
 
+# private / not submitted (internal tests, defense prep)
+private/
+
 # misc
 *.log
 .DS_Store
