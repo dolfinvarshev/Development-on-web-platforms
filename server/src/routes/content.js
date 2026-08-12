@@ -9,6 +9,21 @@ const router = Router();
 // Express 4 does not forward rejected promises from async handlers to the error middleware.
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
+// Only http(s) URLs may be stored for a link. The admin login is public by spec
+// (micha/1234 is printed on the login screen), so an unsanitized `javascript:`
+// or `data:` URL saved here would become clickable stored-XSS on the public
+// marketing pages, which render it as <a href> / <Button as="a" href>.
+function safeHttpUrl(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return '';
+  try {
+    const { protocol } = new URL(raw);
+    return protocol === 'http:' || protocol === 'https:' ? raw : '';
+  } catch {
+    return '';
+  }
+}
+
 function serializePage(doc) {
   return {
     id: String(doc._id),
@@ -63,7 +78,7 @@ router.put(
       })),
       links: (Array.isArray(body.links) ? body.links : []).map((l) => ({
         label: String(l?.label ?? ''),
-        url: String(l?.url ?? ''),
+        url: safeHttpUrl(l?.url),
         description: String(l?.description ?? ''),
       })),
     };

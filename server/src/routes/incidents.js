@@ -52,7 +52,14 @@ router.post(
     }
 
     const cfg = await getSimConfig();
-    const radiusM = Number(req.body?.radiusM) > 0 ? Number(req.body.radiusM) : cfg.radiusM;
+    // Bound the client-supplied radius to the same range PUT /api/config enforces.
+    // Without this, a value like 1e999 parses to Infinity, scatterAround() then
+    // produces NaN/Infinity coordinates and the UPDATE corrupts the whole fleet.
+    const requestedRadius = Number(req.body?.radiusM);
+    const radiusM =
+      Number.isFinite(requestedRadius) && requestedRadius >= 100 && requestedRadius <= 20000
+        ? requestedRadius
+        : cfg.radiusM;
 
     const db = getDb();
     const rows = db
@@ -148,8 +155,9 @@ router.post(
       meshNodes,
     });
 
-    // Hybrid dispatch log: cellular push for every in-radius candidate, plus a
-    // LoRa downlink (beep + flash) command for the ones carrying a LoRa unit.
+    // Hybrid dispatch log: the two cellular channels (push + SMS) for every
+    // in-radius candidate, plus a LoRa downlink (beep + flash) command for the
+    // ones carrying a LoRa unit — matching the alerts flags on each candidate.
     const logs = [];
     for (const c of candidates) {
       if (!c.inRadius) continue;
@@ -159,6 +167,13 @@ router.post(
         deviceLabel: c.label,
         incidentId: incident._id,
         message: `התראת הזנקה נשלחה לטלפון של ${c.label}`,
+      });
+      logs.push({
+        type: 'incident_sms',
+        deviceId: c.deviceId,
+        deviceLabel: c.label,
+        incidentId: incident._id,
+        message: `הודעת SMS עם מיקום האירוע ומספר החירום נשלחה ל${c.label}`,
       });
       if (c.hasLora) {
         logs.push({

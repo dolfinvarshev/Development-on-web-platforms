@@ -27,8 +27,10 @@ import {
 } from './leaflet-utils';
 
 const FALLBACK_CENTER = { lat: 32.0809, lng: 34.7806 };
-const RADIUS_MIN = 200;
-const RADIUS_MAX = 5000;
+// Matches the server-side PUT /api/config bounds, so an admin-configured radius
+// is always honored by the simulator instead of being silently clamped.
+const RADIUS_MIN = 100;
+const RADIUS_MAX = 20000;
 const BIKE_SPEED_MS = 5.5; // realistic urban bike speed
 const SIM_SPEED_FACTOR = 5; // demo runs x5 → ~27.5 m/s so a ride takes seconds
 const TICK_MS = 100;
@@ -475,7 +477,7 @@ export default function SimulatorApp() {
                 <div className="mt-4 space-y-4">
                   <Field
                     label="רדיוס הזנקה (מטרים)"
-                    hint="בין 200 ל-5,000 מטרים — מכשירים מחוץ לרדיוס לא יוזנקו"
+                    hint="בין 100 ל-20,000 מטרים — מכשירים מחוץ לרדיוס לא יוזנקו"
                   >
                     <div className="flex items-center gap-3">
                       <Input

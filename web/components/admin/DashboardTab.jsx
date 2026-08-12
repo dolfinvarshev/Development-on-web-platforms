@@ -48,6 +48,8 @@ export default function DashboardTab({ onNavigate }) {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ticking, setTicking] = useState(false);
+  const [tickResult, setTickResult] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -68,6 +70,24 @@ export default function DashboardTab({ onNavigate }) {
 
   useEffect(() => {
     load();
+  }, [load]);
+
+  // Runs one "silent update" cycle: every LoRa/MAGNUS device reports fresh
+  // telemetry and drains a little battery — the mechanism behind the automatic
+  // <20% maintenance alert. Exposed here so the whole flow is demonstrable from
+  // the browser, then refreshes the dashboard to surface any new alert.
+  const runSilentUpdate = useCallback(async () => {
+    setTicking(true);
+    setTickResult(null);
+    try {
+      const res = await apiFetch('/api/telemetry/tick', { method: 'POST' });
+      setTickResult(res);
+      await load();
+    } catch {
+      setTickResult({ error: true });
+    } finally {
+      setTicking(false);
+    }
   }, [load]);
 
   if (loading) return <Loading text="טוענים את הדשבורד…" />;
@@ -126,6 +146,41 @@ export default function DashboardTab({ onNavigate }) {
             </Card>
           ))}
         </div>
+      </section>
+
+      <section aria-label="מחזור עדכון שקט">
+        <Card className="flex flex-col gap-3 border-emerald-200 bg-emerald-50/40 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">מחזור עדכון שקט (Silent Update)</h2>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">
+              הרצת מחזור טלמטריה: כל משדר LoRa/MAGNUS מדווח מיקום וסוללה, והמערכת שולחת התראת תחזוקה
+              אוטומטית לכל מכשיר שירד מתחת ל-20%.
+            </p>
+          </div>
+          <Button onClick={runSilentUpdate} disabled={ticking} className="shrink-0">
+            {ticking ? 'מריצים…' : 'הרצת מחזור עכשיו'}
+          </Button>
+        </Card>
+        {tickResult && (
+          <div className="mt-3">
+            {tickResult.error ? (
+              <Alert tone="danger">הרצת המחזור נכשלה — נסו שוב.</Alert>
+            ) : tickResult.alerts?.length > 0 ? (
+              <Alert tone="warning" title={`עודכנו ${tickResult.updated} מכשירים · ${tickResult.alerts.length} התראות תחזוקה חדשות`}>
+                <ul className="mt-1 list-disc space-y-1 pe-5">
+                  {tickResult.alerts.map((a) => (
+                    <li key={a.id}>{a.message}</li>
+                  ))}
+                </ul>
+              </Alert>
+            ) : (
+              <Alert tone="success">
+                עודכנו {tickResult.updated} מכשירים. אף מכשיר לא חצה את סף ה-20% במחזור זה — הריצו שוב
+                כדי להמשיך לרוקן סוללות ולראות התראת תחזוקה.
+              </Alert>
+            )}
+          </div>
+        )}
       </section>
 
       <section aria-label="התראות אחרונות">

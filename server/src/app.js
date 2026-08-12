@@ -36,7 +36,11 @@ export function createApp() {
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     console.error('[api] error:', err);
-    res.status(500).json({ error: 'server_error', message: err.message });
+    const body = { error: 'server_error' };
+    // Echo the internal message only outside production, so 500s never leak
+    // stack / DB-driver / connection details to unauthenticated callers.
+    if (process.env.NODE_ENV !== 'production') body.message = err.message;
+    res.status(500).json(body);
   });
 
   return app;

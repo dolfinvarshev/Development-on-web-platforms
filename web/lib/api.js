@@ -37,10 +37,26 @@ export function clearAccessToken() {
   accessToken = null;
 }
 
+let refreshPromise = null;
+
 export async function refreshAccessToken() {
-  const data = await apiFetch('/api/auth/refresh', { method: 'POST' });
-  accessToken = data.accessToken;
-  return accessToken;
+  // Single-flight: concurrent callers (React StrictMode's double-mount, several
+  // admin calls racing after the 15-min access token expires, or two open tabs)
+  // must share ONE /api/auth/refresh request. Refresh rotation revokes the old
+  // jti on first use, so parallel refreshes carrying the same cookie would 401
+  // all-but-one and spuriously log the admin out — this collapses them into a
+  // single rotation that every caller awaits.
+  if (!refreshPromise) {
+    refreshPromise = apiFetch('/api/auth/refresh', { method: 'POST' })
+      .then((data) => {
+        accessToken = data.accessToken;
+        return accessToken;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
 }
 
 /**

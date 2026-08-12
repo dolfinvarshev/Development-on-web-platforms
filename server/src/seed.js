@@ -73,7 +73,8 @@ export function ensureSeed() {
   `);
 
   const now = Date.now();
-  const LOW_BATTERY_AT = new Set([0, 14, 22, 40]); // a few devices under 20% to demo maintenance alerts
+  const LOW_BATTERY_AT = new Set([0, 14, 22, 40]); // a few devices already under 20% (maintenance backlog)
+  const BRINK_AT = new Set([5, 17, 44]); // LoRa devices seeded at 20–21% so a silent-update tick can cross the 20% alert threshold live in the demo
 
   const tx = db.transaction(() => {
     for (let i = 0; i < 50; i++) {
@@ -99,7 +100,9 @@ export function ensureSeed() {
 
       let battery = null;
       if (hasLora || hasMagnus) {
-        battery = LOW_BATTERY_AT.has(i) ? 10 + Math.floor(rand() * 9) : 25 + Math.floor(rand() * 76);
+        if (LOW_BATTERY_AT.has(i)) battery = 10 + Math.floor(rand() * 9); // already low
+        else if (BRINK_AT.has(i)) battery = 20 + Math.floor(rand() * 2); // 20–21%: one silent-update tick crosses <20% and fires a maintenance alert
+        else battery = 25 + Math.floor(rand() * 76);
       }
 
       // last_seen: ~40% fresh (≤10 min), rest up to 36 hours ago

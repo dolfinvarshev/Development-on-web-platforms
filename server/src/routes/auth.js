@@ -8,11 +8,20 @@ import { randomUUID } from 'node:crypto';
 import { getDb } from '../db/sqlite.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
 
+const isProd = process.env.NODE_ENV === 'production';
+
+// Fail hard rather than silently signing tokens with a public, repo-known dev
+// secret: a production deploy that forgot to set the env vars would otherwise be
+// fully forgeable by anyone who read the GitHub repo. Locally the dev fallbacks
+// keep zero-config `npm run dev` working.
+if (isProd && (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET)) {
+  throw new Error('ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET must be set when NODE_ENV=production');
+}
+
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'dev-access-secret-change-me';
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'dev-refresh-secret-change-me';
 const REFRESH_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-const isProd = process.env.NODE_ENV === 'production';
 const COOKIE_NAME = 'refresh_token';
 // path '/api/auth' keeps the refresh token off every non-auth request.
 // Production runs cross-site (web on Vercel, API on Render), which requires

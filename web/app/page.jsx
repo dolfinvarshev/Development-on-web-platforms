@@ -146,15 +146,15 @@ export default async function HomePage() {
             <div>
               <h2 className="text-2xl font-bold">גם בלי דפיברילטור — אתם מצילים חיים</h2>
               <p className="mt-2 max-w-2xl leading-relaxed text-emerald-50">
-                ב-50$ בלבד מצטרפים כנשאי מגבר LoRa: כל מכשיר כזה מרחיב את רשת הממסר ומעביר הלאה קריאות
-                מצוקה מאזורים ללא קליטה סלולרית.
+                הצטרפו כנשאי מגבר LoRa וקבלו מענק של 50$: כל מכשיר כזה מרחיב את רשת הממסר ומעביר הלאה
+                קריאות מצוקה מאזורים ללא קליטה סלולרית.
               </p>
             </div>
             <Link
               href="/join"
               className="inline-flex shrink-0 items-center justify-center rounded-xl bg-white px-6 py-3 text-base font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-50"
             >
-              לתוכנית ההצטרפות ב-50$
+              לתוכנית המענק — 50$
             </Link>
           </div>
         </div>
