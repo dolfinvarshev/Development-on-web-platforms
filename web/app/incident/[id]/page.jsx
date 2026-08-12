@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { apiFetch } from '@/lib/api';
 import { Alert, Section } from '@/components/ui';
 import IncidentView from '@/components/map/IncidentView';
+import OfficialChannels from '@/components/OfficialChannels';
 
 export const metadata = {
   title: 'תצוגת מוקד — אירוע',
@@ -24,6 +25,8 @@ export default async function IncidentPage({ params }) {
             חזרה לסימולטור
           </Link>
         </Alert>
+        {/* The failure branch is exactly when the official fallback matters most. */}
+        <OfficialChannels className="mt-4" />
       </Section>
     );
   }

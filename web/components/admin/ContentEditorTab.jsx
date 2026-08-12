@@ -285,6 +285,14 @@ export default function ContentEditorTab() {
 
               <fieldset>
                 <legend className="mb-2 text-sm font-bold text-slate-700">קישורים חיצוניים</legend>
+                {/* Requirement 14 needs at least three shops on /shop; warn before an
+                    edit drops below that (the page itself falls back to its built-in list). */}
+                {selectedKey === 'shop' && form.links.filter((l) => !l.url.includes('meshtastic.org/docs')).length < 3 && (
+                  <Alert tone="warning" className="mb-3">
+                    בעמוד החנויות נדרשים לפחות שלושה יעדי רכישה. כרגע מוגדרים פחות — האתר יציג את
+                    רשימת ברירת המחדל המובנית עד שיתווספו קישורים.
+                  </Alert>
+                )}
                 <div className="space-y-3">
                   {form.links.map((link, idx) => (
                     <div key={link._id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">

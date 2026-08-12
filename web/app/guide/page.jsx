@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { fetchContent } from '@/lib/api';
 import { Button, PageHero, Section } from '@/components/ui';
 import ContentSections from '@/components/marketing/ContentSections';
+import OfficialChannels from '@/components/OfficialChannels';
 
 export const metadata = { title: 'איך זה עובד' };
 
@@ -32,6 +33,12 @@ export default async function GuidePage() {
   return (
     <>
       <PageHero title={page?.title ?? 'איך זה עובד — המדריך המלא'} lead={page?.intro} />
+
+      {/* This page teaches how fast survival drops; the official route out must be
+          actionable right here, not only in the footer. */}
+      <Section className="pb-0">
+        <OfficialChannels />
+      </Section>
 
       <ContentSections page={page} />
 

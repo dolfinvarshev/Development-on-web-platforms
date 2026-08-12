@@ -210,14 +210,14 @@ export default function CprGuide() {
       <Section className="pt-2 pb-0">
         <p className="max-w-3xl text-xs leading-relaxed text-slate-400">
           מדריך תמציתי למצב חירום, על פי עקרונות מד״א וה־ERC (המועצה האירופית להחייאה). הוא אינו
-          תחליף לקורס החייאה מוסמך — מומלץ להירשם ל
+          תחליף לקורס החייאה מוסמך — מומלץ להירשם לקורס החייאה. פרטים על הקורסים באתר{' '}
           <a
             href="https://www.mdais.org"
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
           >
-            קורסי החייאה של מד״א
+            מד״א הרשמי
           </a>
           .
         </p>

@@ -143,6 +143,11 @@ export const DEFAULT_CONTENT = [
         description: 'לוחות LoRa32 V3 קלים וחסכוניים — בגרסת 433MHz',
       },
       {
+        label: 'RAKwireless — חנות היצרן',
+        url: 'https://store.rakwireless.com',
+        description: 'מודולי WisBlock ומכשירי WisMesh תואמי Meshtastic — בגרסת 433MHz',
+      },
+      {
         label: 'AliExpress — חיפוש מוכן: LoRa 433MHz Meshtastic',
         url: 'https://www.aliexpress.com/w/wholesale-lora-433mhz-meshtastic.html',
         description: 'מבחר גדול במחירים נמוכים — בדקו פעמיים שבחרתם בתדר הנכון',

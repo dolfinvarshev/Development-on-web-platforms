@@ -50,16 +50,35 @@ export default function Nav() {
           >
             ניהול
           </Link>
+          <a
+            href="tel:101"
+            className="ms-2 inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-red-700"
+          >
+            <span aria-hidden="true">📞</span>
+            <span>חירום 101</span>
+          </a>
         </nav>
 
-        <button
-          className="grid h-10 w-10 place-items-center rounded-lg text-2xl text-slate-600 hover:bg-slate-100 lg:hidden"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? 'סגירת תפריט' : 'פתיחת תפריט'}
-          aria-expanded={open}
-        >
-          {open ? '✕' : '☰'}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          {/* The header is the only chrome visible at any scroll depth, so the
+              101 dial stays here on every page and every breakpoint. */}
+          <a
+            href="tel:101"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-red-700"
+          >
+            <span aria-hidden="true">📞</span>
+            <span>101</span>
+            <span className="sr-only">חיוג למוקד החירום של מד״א</span>
+          </a>
+          <button
+            className="grid h-10 w-10 place-items-center rounded-lg text-2xl text-slate-600 hover:bg-slate-100"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? 'סגירת תפריט' : 'פתיחת תפריט'}
+            aria-expanded={open}
+          >
+            {open ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
 
       {open && (

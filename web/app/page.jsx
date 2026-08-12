@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Alert, Badge, Button, Card, Section } from '@/components/ui';
 import { apiFetch, fetchContent } from '@/lib/api';
 import DistressFlowDiagram from '@/components/home/DistressFlowDiagram';
+import OfficialChannels from '@/components/OfficialChannels';
 
 export const metadata = {
   description:
@@ -49,9 +50,20 @@ export default async function HomePage() {
               צפו בסימולטור החי
             </Button>
           </div>
-          <p className="mt-6 text-sm font-bold text-red-600">במקרה חירום אמיתי — חייגו 101</p>
+          <p className="mt-6 text-sm font-bold text-red-600">
+            במקרה חירום אמיתי —{' '}
+            <a href="tel:101" className="underline underline-offset-4 hover:text-red-700">
+              חייגו 101
+            </a>
+          </p>
         </div>
       </div>
+
+      {/* Official channels first — hardcoded, so they survive an API outage or a
+          CMS edit that removes the equivalent links further down the page. */}
+      <Section className="pb-0">
+        <OfficialChannels />
+      </Section>
 
       {/* ── Requirement 4: LoRa in exactly three lines ── */}
       <Section>
