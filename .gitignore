@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# builds
+.next/
+out/
+dist/
+
+# environment
+.env
+.env.local
+.env*.local
+
+# databases / local data
+server/data/
+.mongodb-binaries/
+
+# misc
+*.log
+.DS_Store
+.vercel

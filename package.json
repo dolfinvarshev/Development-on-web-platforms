@@ -1,0 +1,25 @@
+{
+  "name": "definet",
+  "private": true,
+  "version": "1.0.0",
+  "description": "דפי-נט — רשת דפיברילטורים חכמה: מיפוי דפיברילטורים נייחים וניידים בזמן אמת (פרויקט קורס: פיתוח בסביבות WEB)",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c yellow,cyan \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run dev -w server",
+    "dev:web": "npm run dev -w web",
+    "seed": "npm run seed -w server",
+    "build": "npm run build -w web",
+    "start:api": "npm run start -w server",
+    "start:web": "npm run start -w web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
