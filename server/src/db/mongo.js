@@ -1,15 +1,27 @@
 import mongoose from 'mongoose';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let memServer = null;
 
 export async function connectMongo() {
   let uri = process.env.MONGODB_URI;
   if (!uri) {
-    // $0 local development: spin up a real MongoDB in-memory.
+    // $0 local development: run a real MongoDB via mongodb-memory-server, but with a
+    // persistent dbPath so CMS edits, incidents and alert history survive restarts
+    // (a fresh temp dir would silently reset the admin's work on every `npm run dev`).
+    const dbPath =
+      process.env.MONGO_DATA_DIR || path.join(__dirname, '..', '..', 'data', 'mongo');
+    fs.mkdirSync(dbPath, { recursive: true });
     const { MongoMemoryServer } = await import('mongodb-memory-server');
-    memServer = await MongoMemoryServer.create();
+    memServer = await MongoMemoryServer.create({
+      instance: { dbPath, storageEngine: 'wiredTiger' },
+    });
     uri = memServer.getUri('definet');
-    console.log('[mongo] MONGODB_URI not set — using in-memory MongoDB (data resets on restart)');
+    console.log(`[mongo] MONGODB_URI not set — local MongoDB with persistent data at ${dbPath}`);
   }
   await mongoose.connect(uri);
   console.log('[mongo] connected');
