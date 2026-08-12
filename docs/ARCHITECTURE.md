@@ -58,6 +58,7 @@ Browser ──► Next.js 15 (web/, port 3000)  ── marketing pages, simulato
   app/layout.jsx            RTL Hebrew shell, Heebo font, Nav+Footer                [core]
   app/globals.css           tailwind + leaflet css                                  [core]
   components/Nav.jsx, Footer.jsx, ui.jsx     shared UI kit                          [core]
+  components/OfficialChannels.jsx  101 + defi.co.il + MDA strip (emergency surfaces) [core]
   lib/api.js                apiFetch / adminFetch (auto-refresh) / fetchContent     [core]
   lib/format.js             Hebrew relative time, distances, labels                 [core]
   lib/sound.js              WebAudio beep / SOS / metronome                         [core]
@@ -216,6 +217,10 @@ GET `/api/config` (public) → `{config}` · PUT `/api/config` (admin, partial) 
   `https://routing.openstreetmap.de/routed-bike/route/v1/bike/{fromLng},{fromLat};{toLng},{toLat}?overview=full&geometries=geojson`
   → `routes[0].geometry.coordinates` ([lng,lat] pairs — flip for Leaflet), `distance` m, `duration` s.
   On fetch failure fall back to a straight dashed line + warning ("מסלול משוער — שירות הניווט אינו זמין").
+- **Official channels come first.** Every *emergency* surface (`/simulator`, `/cpr`,
+  `/incident/[id]`) must render `<OfficialChannels />` — the 101 dial button plus the two
+  authoritative maps — because the project brief requires prioritizing "Where is Defi" and 101
+  over DefiNet itself. The Footer carries the same links site-wide as the baseline.
 - External links (fixed registry — use exactly these):
   - MDA national defibrillator registry: `https://www.mdais.org/about/mdefi` (label: מאגר הדפיברילטורים הלאומי של מד״א)
   - Where is Defi: `https://defi.co.il/#/map`

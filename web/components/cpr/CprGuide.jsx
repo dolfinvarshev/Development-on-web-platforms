@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Alert, Button, Card, Section } from '@/components/ui';
+import OfficialChannels from '@/components/OfficialChannels';
 import { startMetronome, stopMetronome } from '@/lib/sound';
 
 const BPM = 110;
@@ -126,6 +127,8 @@ export default function CprGuide() {
             </Button>
           </div>
         </Alert>
+
+        <OfficialChannels className="mt-4" />
       </Section>
 
       <Section title="שישה צעדים שמצילים חיים" className="pb-4">

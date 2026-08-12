@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Alert, Badge, Card } from '@/components/ui';
+import OfficialChannels from '@/components/OfficialChannels';
 import { formatDateTimeHe, formatDistanceM, formatSeconds, relativeTimeHe } from '@/lib/format';
 import { devicePopupHtml, incidentIcon, rankIcon, volunteerIcon } from './leaflet-utils';
 
@@ -210,6 +211,8 @@ export default function IncidentView({ initial }) {
           />
 
           <div className="space-y-4">
+            <OfficialChannels />
+
             <Card>
               <p className="text-xs font-semibold text-slate-500">מרחק שנותר עד המטופל</p>
               <p

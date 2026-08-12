@@ -14,6 +14,7 @@ import { apiFetch } from '@/lib/api';
 import { formatDistanceM, formatSeconds, relativeTimeHe, sourceLabel } from '@/lib/format';
 import { beep, sosBeep } from '@/lib/sound';
 import { Alert, Badge, Button, Card, Field, Input, PageHero } from '@/components/ui';
+import OfficialChannels from '@/components/OfficialChannels';
 import {
   cumulativeDistances,
   devicePopupHtml,
@@ -462,6 +463,8 @@ export default function SimulatorApp() {
       </PageHero>
 
       <div className="mx-auto max-w-6xl px-4 py-8">
+        <OfficialChannels className="mb-6" />
+
         {error && (
           <Alert tone="danger" className="mb-4">
             {error}
