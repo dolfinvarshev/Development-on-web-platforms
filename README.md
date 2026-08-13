@@ -137,6 +137,10 @@ Ready-to-present slide deck (+ known-issues slide): [docs/SLIDES.md](docs/SLIDES
   (`server/data/mongo`) — admin edits survive restarts; deleting the directory resets to defaults.
 - **The routing service** (public OSRM) is a free third party; on failure the UI shows an
   approximate straight line with a notice.
+- **Database network exposure:** the MongoDB Atlas IP allow-list is `0.0.0.0/0`, because
+  Render's free tier has no static outbound IP to whitelist. Access is still authenticated
+  (username + password over TLS) and the cluster holds demo data only. Proper practice — VPC
+  peering or a static-IP allow-list — requires paid Atlas/Render tiers.
 - Full, current list — on the "Known Issues" slide of the deck.
 
 ## Repository layout

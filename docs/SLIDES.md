@@ -35,6 +35,9 @@ Course project — "Development on Web Platforms"
    shows an approximate straight line with a notice.
 5. **Real SMS/Push are not sent** — they are simulated in the simulator and recorded in the
    alert log (real SMS is never free and is not required for this course project).
+6. **Database network exposure** — the Atlas IP allow-list is `0.0.0.0/0` because Render's free
+   tier has no static outbound IP. Access remains authenticated (user + password over TLS) and
+   the cluster holds demo data only; VPC peering / static-IP allow-listing requires paid tiers.
 
 ---
 
