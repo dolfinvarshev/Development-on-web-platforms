@@ -15,6 +15,7 @@ const PAGE_ROUTES = {
   join: '/join',
   shop: '/shop',
   maintenance: '/maintenance',
+  register: '/register',
 };
 
 export default function ContentEditorTab() {

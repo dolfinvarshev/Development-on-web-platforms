@@ -29,7 +29,9 @@ Browser ──► Next.js 15 (web/, port 3000)  ── marketing pages, simulato
 ```
 
 - Web calls the API directly with CORS + `credentials:'include'` (refresh cookie).
-- Local dev: MongoDB runs in-memory automatically (`mongodb-memory-server`) when `MONGODB_URI` is empty.
+- Local dev: when `MONGODB_URI` is empty, a local MongoDB starts automatically via
+  `mongodb-memory-server` with a **persistent data directory** (`server/data/mongo`) — CMS edits,
+  incidents and alert history survive restarts; deleting the directory resets to defaults.
 - Production ($0 tiers): Vercel (web) + Render (api) + MongoDB Atlas M0. SQLite lives on the API dyno
   and re-seeds itself on boot if empty (documented known limitation).
 
@@ -141,6 +143,10 @@ SimConfig { key:'sim' unique, radiusM:1500, scatterFactor:2.5, freshTelemetryMin
 Base URL: `http://localhost:4000`. Errors: `{ error:'<code>', message?:string, fields?:{name:hebrewMsg} }`.
 `fields` values are **Hebrew** user-facing messages.
 
+**Privacy rule:** PUBLIC endpoints never return a full phone number — `lib/phone.js maskPhone()`
+masks them (`052***4567`) in `GET /api/devices` and in every incident serialization
+(candidates + responder). Full numbers are admin-only (`/api/volunteers`, analytics list).
+
 ### Auth — `routes/auth.js` [B1]
 | Method & path | Body / notes | Response |
 |---|---|---|
@@ -156,7 +162,7 @@ Access JWT `{sub,role:'admin'}` 15 min, `ACCESS_TOKEN_SECRET`. Refresh JWT `{sub
 
 ### Registry — `routes/registry.js` [B2]
 | POST `/api/register` | public, **no password** (req 15). Body `{firstName!, lastName?, phone!, category!, loraId, medicalTraining?}`. Validate: firstName trimmed non-empty; phone Israeli mobile `/^05\d{8}$/` after stripping `[-\s]`; category one of 3; **loraId required unless category==='defib_only'**, format `/^[0-9A-Fa-f]{4,23}$/`, unique. Creates user + device (`has_defib = category!=='lora_only'`, `has_lora = category!=='defib_only'`, `kind:'mobile'`, battery 100 when has_lora else NULL, `location_source` `'lora'`/`'phone'`, label `דפיברילטור נייד – <name>` or `מגבר רשת LoRa – <name>`, last_seen now, lat/lng NULL). | 201 `{user, device}`; 400 `validation` with Hebrew `fields`; 409 `duplicate` (loraId) |
-| GET `/api/volunteers?query=&category=` | admin. Joins users+devices, search on name/phone/lora_id | `{volunteers:[{id, firstName, lastName, phone, category, loraId, medicalTraining, isSeed, createdAt, device:{id,label,battery,lastSeen,kind,status}}]}` |
+| GET `/api/volunteers?query=&category=` | admin. Joins users+devices, search on name/phone/lora_id | `{volunteers:[{id, firstName, lastName, phone, category, loraId, medicalTraining, isSeed, createdAt, device:{id,label,battery,lastSeen,kind,status,hasLora,hasMagnus}}]}` |
 | PUT `/api/volunteers/:id` | admin; partial update, same validation; sync device dev_eui/label | `{volunteer}` |
 | DELETE `/api/volunteers/:id` | admin; cascades to device | `{ok:true}` |
 | GET `/api/stats` | public | `{volunteers, devices, withLora, withMagnus, stationary, mobile, repeaters}` |
@@ -248,12 +254,13 @@ GET `/api/config` (public) → `{config}` · PUT `/api/config` (admin, partial) 
 ## 9. Environment variables
 
 Server: `PORT` (4000), `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET`, `MONGODB_URI` (optional →
-in-memory fallback), `CLIENT_ORIGIN` (CORS + cookies). Web: `NEXT_PUBLIC_API_URL`.
+local persistent fallback), `CLIENT_ORIGIN` (CORS + cookies). Web: `NEXT_PUBLIC_API_URL`.
 
 ## 10. Seed data (requirement 9)
 
 `server/src/seed.js` — deterministic (mulberry32 seed 42): admin `micha`/`1234` (bcrypt), and 50
 users+devices when empty: 14 stationary (8 LoRa), 14 mobile defib+LoRa (7 of them +MAGNUS),
 12 mobile defib phone-only, 10 LoRa-only repeaters. Hebrew names, Israeli 05X phones, positions
-jittered around 10 Israeli cities, batteries 8–100 (a few <20% to demo maintenance alerts),
+jittered around 10 Israeli cities, batteries 10–100 (four already <20% as a maintenance backlog,
+three at a 20–21% "brink" so one silent-update tick crosses the alert threshold live),
 last_seen 0–36h. Mongo defaults: CMS pages from `data/default-content.js` + SimConfig.

@@ -6,6 +6,7 @@ import { getDb } from '../db/sqlite.js';
 import { Incident, AlertLog, getSimConfig } from '../db/mongo.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
 import { haversineM, scatterAround } from '../lib/geo.js';
+import { maskPhone } from '../lib/phone.js';
 
 const router = Router();
 
@@ -19,6 +20,13 @@ function serializeIncident(doc) {
   const o = doc.toObject({ versionKey: false });
   o.id = String(o._id);
   delete o._id;
+  // Every route that uses this serializer is public (simulator / call-center
+  // view), so volunteer phone numbers go out masked. Full numbers stay in the
+  // stored document and remain available through the admin-only endpoints.
+  if (Array.isArray(o.candidates)) {
+    for (const c of o.candidates) c.phone = maskPhone(c.phone);
+  }
+  if (o.responder?.phone) o.responder.phone = maskPhone(o.responder.phone);
   return o;
 }
 
@@ -295,6 +303,13 @@ router.post(
   wrap(async (req, res) => {
     const incident = await findIncidentOr404(req, res);
     if (!incident) return;
+    // Arrival only makes sense while a volunteer is en route; without this guard
+    // a cancelled incident could be flipped to 'resolved' and corrupt analytics.
+    if (incident.status !== 'responding') {
+      return res
+        .status(409)
+        .json({ error: 'wrong_status', message: 'לא ניתן לסמן הגעה לאירוע שאינו בטיפול' });
+    }
     const arrivedAt = new Date();
     incident.arrivedAt = arrivedAt;
     incident.resolvedAt = arrivedAt;
@@ -313,6 +328,13 @@ router.post(
   wrap(async (req, res) => {
     const incident = await findIncidentOr404(req, res);
     if (!incident) return;
+    // Only an open incident can be cancelled — a resolved one is history and
+    // must keep its status (the analytics counts depend on it).
+    if (incident.status !== 'active' && incident.status !== 'responding') {
+      return res
+        .status(409)
+        .json({ error: 'wrong_status', message: 'לא ניתן לבטל אירוע שכבר הסתיים' });
+    }
     incident.status = 'cancelled';
     incident.resolvedAt = new Date();
     await incident.save();

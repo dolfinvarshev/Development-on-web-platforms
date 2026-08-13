@@ -4,6 +4,7 @@ import { Router } from 'express';
 import { getDb } from '../db/sqlite.js';
 import { AlertLog, TelemetryLog } from '../db/mongo.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
+import { maskPhone } from '../lib/phone.js';
 
 const router = Router();
 
@@ -38,7 +39,8 @@ function mapDevice(row) {
     owner: {
       firstName: row.first_name,
       lastName: row.last_name,
-      phone: row.phone,
+      // GET /api/devices is public — never leak a registrant's full number here.
+      phone: maskPhone(row.phone),
       category: row.category,
     },
   };

@@ -240,13 +240,12 @@ export default function IncidentView({ initial }) {
                   <p className="font-bold text-slate-900">{responder.label}</p>
                   <p className="mt-1 text-sm text-slate-600">
                     טלפון:{' '}
-                    <a
-                      dir="ltr"
-                      href={`tel:${responder.phone}`}
-                      className="font-semibold text-emerald-700 hover:underline"
-                    >
+                    <span dir="ltr" className="font-semibold text-slate-800">
                       {responder.phone}
-                    </a>
+                    </span>
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-400">
+                    המספר מוצג ממוסך — המספר המלא זמין למוקדן מורשה בלבד
                   </p>
                   <p className="mt-1 text-xs text-slate-500" suppressHydrationWarning>
                     אישר הגעה: {formatDateTimeHe(responder.acceptedAt)}
