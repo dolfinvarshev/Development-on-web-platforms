@@ -13,7 +13,7 @@
 פרויקט בקורס «פיתוח בסביבות WEB»
 
 - **מבצעים:** _[שם שותף 1]_ · _[שם שותף 2]_
-- **GitHub:** _[https://github.com/<user>/<repo>]_
+- **GitHub:** https://github.com/dolfinvarshev/Development-on-web-platforms
 - **כתובת בענן:** _[https://<app>.vercel.app]_ (API: _[https://<api>.onrender.com]_)
 - **כניסת מנהל להדגמה:** `micha` / `1234`
 

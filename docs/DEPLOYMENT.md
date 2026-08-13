@@ -5,11 +5,8 @@
 
 ## שלב 0 — GitHub
 
-1. צרו ריפו חדש ב-GitHub והעלו אליו את הפרויקט:
-   ```bash
-   git remote add origin https://github.com/<username>/<repo>.git
-   git push -u origin main
-   ```
+1. ✅ בוצע — הריפו חי ב:
+   https://github.com/dolfinvarshev/Development-on-web-platforms
 
 ## שלב 1 — MongoDB Atlas (NoSQL, חינם)
 

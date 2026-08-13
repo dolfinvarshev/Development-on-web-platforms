@@ -4,6 +4,8 @@
 בהשראת [Where is Defi](https://defi.co.il/#/map) ובתוספת היכולת הייחודית: מעקב אחר דפיברילטורים **בתנועה**
 באמצעות שלושה ערוצי מיקום — סלולר, LoRa 433MHz (רשת Meshtastic) ולוויין MAGNUS (רשת Iridium).
 
+> 📦 **GitHub:** https://github.com/dolfinvarshev/Development-on-web-platforms
+>
 > 🌐 **כתובת בענן:** _יעודכן לאחר הפריסה_ (Vercel + Render + MongoDB Atlas — הכול בחינם)
 >
 > 👥 **מבצעים:** _[שמות השותפים יעודכנו]_
