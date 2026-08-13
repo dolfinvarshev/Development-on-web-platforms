@@ -2,7 +2,7 @@
   "name": "definet",
   "private": true,
   "version": "1.0.0",
-  "description": "דפי-נט — רשת דפיברילטורים חכמה: מיפוי דפיברילטורים נייחים וניידים בזמן אמת (פרויקט קורס: פיתוח בסביבות WEB)",
+  "description": "DefiNet — smart defibrillator network: real-time mapping of stationary and moving defibrillators (course project: Development on Web Platforms)",
   "workspaces": [
     "server",
     "web"

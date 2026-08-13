@@ -15,7 +15,7 @@ hardware). Location sources per moving device, in preference order:
 3. **Phone GPS** — only where there is cellular reception.
 
 Official channels always come first: emergency **101 (MDA)** and **defi.co.il**.
-This is a course project ("פיתוח בסביבות WEB"); marketing quality of the interfaces is graded heavily.
+This is a course project ("Development on Web Platforms"); marketing quality of the interfaces is graded heavily.
 
 ## 2. Runtime topology (two servers)
 

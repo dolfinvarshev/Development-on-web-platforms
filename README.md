@@ -1,151 +1,158 @@
-# דפי-נט (DefiNet) — רשת דפיברילטורים חכמה
+# DefiNet (דפי-נט) — Smart Defibrillator Network
 
-**פרויקט קורס «פיתוח בסביבות WEB»** — מערכת מיפוי והזנקה של דפיברילטורים **נייחים וניידים** בזמן אמת,
-בהשראת [Where is Defi](https://defi.co.il/#/map) ובתוספת היכולת הייחודית: מעקב אחר דפיברילטורים **בתנועה**
-באמצעות שלושה ערוצי מיקום — סלולר, LoRa 433MHz (רשת Meshtastic) ולוויין MAGNUS (רשת Iridium).
+**Course project — "Development on Web Platforms"** — a real-time mapping and dispatch system for
+**stationary and moving defibrillators**, inspired by [Where is Defi](https://defi.co.il/#/map)
+and extending it with the one thing existing maps can't do: tracking defibrillators **in motion**,
+over three location channels — cellular, LoRa 433MHz (Meshtastic mesh), and the MAGNUS satellite
+service (Iridium network).
 
 > 📦 **GitHub:** https://github.com/dolfinvarshev/Development-on-web-platforms
 >
-> 🌐 **כתובת בענן:** _יעודכן לאחר הפריסה_ (Vercel + Render + MongoDB Atlas — הכול בחינם)
+> 🌐 **Cloud address:** _to be updated after deployment_ (Vercel + Render + MongoDB Atlas — all free tiers)
 >
-> 👥 **מבצעים:** _[שמות השותפים יעודכנו]_
+> 👥 **Authors:** _[partner names to be filled in]_
 >
-> 🔑 **כניסת מנהל (לצורך הקורס):** שם משתמש `micha` · סיסמה `1234`
+> 🔑 **Admin login (for the course demo):** username `micha` · password `1234`
+>
+> ℹ️ Per requirement 2, the **site itself** is entirely in Hebrew (RTL). Project documentation is in English.
 
 ---
 
-## מה המערכת עושה?
+## What the system does
 
-בדום לב, כל דקה ללא שוק חשמלי גורעת כ-7%–10% מסיכויי ההישרדות. דפי-נט:
+In cardiac arrest, every minute without a shock cuts survival by ~7–10%. DefiNet:
 
-1. **ממפה** את כל הדפיברילטורים ברשת — נייחים וניידים — כולל מצב סוללה ושידור אחרון,
-   המתעדכנים אוטומטית ("עדכון שקט") דרך רשת ה-LoRa.
-2. **מזניקה** בעת קריאת מצוקה: חישוב גאוגרפי (Geo-fencing) מאתר את המכשירים הקרובים
-   והזמינים ביותר, וההתראה יוצאת **בשני ערוצים במקביל** — Push/SMS לטלפון + פקודת
-   Downlink שמצפצפת ומהבהבת על מכשיר ה-LoRa הפיזי.
-3. **מנווטת** את המתנדב במסלול אופניים אמיתי (לא קו אווירי) עד לנקודת האירוע,
-   ומדווחת למוקד את המרחק הנותר בזמן אמת.
-4. **מדגימה** את כל התרחיש מקצה-לקצה בסימולטור אינטרנטי — ללא צורך בחומרה.
+1. **Maps** every defibrillator in the network — stationary and mobile — including battery level
+   and last transmission time, updated automatically ("silent update") over the LoRa network.
+2. **Dispatches** on a distress call: a geographic computation (geo-fencing) finds the nearest,
+   most available devices, and the alert goes out **on two channels simultaneously** — Push/SMS to
+   the volunteer's phone, plus a LoRa **downlink** command that makes the physical device beep and flash.
+3. **Navigates** the volunteer along a real bike route (not an aerial line) to the scene, and
+   reports the remaining distance to the dispatch center in real time.
+4. **Demonstrates** the whole end-to-end scenario in a browser-based simulator — no hardware needed.
 
-תמיד קודם הערוצים הרשמיים: **מוקד 101 של מד"א** ו-defi.co.il.
+Official channels always come first: **MDA's 101 line** and defi.co.il.
 
-## התקנה והרצה מקומית
+## Local installation & run
 
-דרישות מקדימות: **Node.js 20 ומעלה** (כולל npm). זהו. אין צורך בהתקנת מסדי נתונים —
-SQLite הוא קובץ מקומי, ו-MongoDB עולה אוטומטית בזיכרון כשלא הוגדר `MONGODB_URI`.
+Prerequisites: **Node.js 20+** (with npm). That's all — no database installation:
+SQLite is a local file, and MongoDB starts automatically in-process (with a persistent local
+data directory) when `MONGODB_URI` is not set.
 
 ```bash
-# 1) שכפול הריפו
-git clone <repo-url>
-cd "web project"
+# 1) Clone
+git clone https://github.com/dolfinvarshev/Development-on-web-platforms.git
+cd Development-on-web-platforms
 
-# 2) התקנת תלויות (שני ה-workspaces יחד)
+# 2) Install dependencies (both workspaces)
 npm install
 
-# 3) זריעת מסד הנתונים (אדמין + 50 מכשירי דמו) — רץ אוטומטית גם בעליית השרת
+# 3) Seed the database (admin + 50 demo devices) — also runs automatically on server boot
 npm run seed
 
-# 4) הרצת שני השרתים יחד (Express על 4000, Next.js על 3000)
+# 4) Run both servers together (Express on 4000, Next.js on 3000)
 npm run dev
 ```
 
-פתחו את [http://localhost:3000](http://localhost:3000) — האתר כולו בעברית (RTL).
-ה-API זמין ב-[http://localhost:4000/api/health](http://localhost:4000/api/health).
+Open [http://localhost:3000](http://localhost:3000) — the site is entirely in Hebrew (RTL).
+The API answers at [http://localhost:4000/api/health](http://localhost:4000/api/health).
 
-משתני סביבה (אופציונליים לפיתוח מקומי): העתיקו `server/.env.example` → `server/.env`
-ו-`web/.env.example` → `web/.env.local` ועדכנו לפי הצורך.
+Environment variables (optional for local dev): copy `server/.env.example` → `server/.env`
+and `web/.env.example` → `web/.env.local`, then adjust as needed.
 
-## ארכיטקטורה (שני שרתים · שני מסדי נתונים)
+## Architecture (two servers · two databases)
 
 ```
-דפדפן ──► Next.js 15 + Tailwind (web/,‏ פורט 3000)
-              │  עמודי שיווק (CMS) · סימולטור מפה (Leaflet) · פאנל ניהול
+Browser ──► Next.js 15 + Tailwind (web/, port 3000)
+              │  marketing pages (CMS) · map simulator (Leaflet) · admin panel
               ▼
-          Express (server/,‏ פורט 4000) — REST API
-              │  JWT עם Refresh Rotation · מנוע אירועים · Geo-fencing
-              ├──► SQLite  (SQL)   — משתמשים, מכשירים, אדמינים, refresh tokens
-              └──► MongoDB (NoSQL) — אירועים, תוכן שיווקי, יומן התראות, טלמטריה, קונפיג
+          Express (server/, port 4000) — REST API
+              │  JWT with refresh rotation · incident engine · geo-fencing
+              ├──► SQLite  (SQL)   — users, devices, admins, refresh tokens
+              └──► MongoDB (NoSQL) — incidents, CMS content, alert log, telemetry, config
 ```
 
-פירוט מלא של חוזי ה-API, הסכמות והחלטות התכנון: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Full API contracts, schemas and design decisions: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-### למה שני מסדי נתונים?
+### Why two databases?
 
-- **SQLite (SQL):** נתונים טבלאיים עם קשרים ואילוצים — משתמשים ↔ מכשירים (מפתח זר,
-  CASCADE), ייחודיות DevEUI, טוקני רענון. שאילתות JOIN מהירות וסכמה קשיחה.
-- **MongoDB (NoSQL):** מסמכים "עשירים" בעלי מבנה משתנה — אירוע שלם על מועמדיו
-  ופירורי הלחם שלו במסמך אחד, תוכן CMS גמיש, יומני התראות וטלמטריה.
+- **SQLite (SQL):** tabular data with relations and constraints — users ↔ devices (foreign key,
+  CASCADE), DevEUI uniqueness, refresh tokens. Fast JOINs and a rigid schema.
+- **MongoDB (NoSQL):** rich, variable-shape documents — a whole incident with its candidates and
+  breadcrumb trail in one document, flexible CMS content, alert and telemetry logs.
 
-## מיפוי דרישות ⇄ מימוש
+## Requirements ⇄ implementation map
 
-| # | דרישה | איפה ממומש |
+| # | Requirement | Where it lives |
 |---|---|---|
-| 1 | סימולטור מצוקה ב-WEB ללא חומרה | `/simulator` + מנוע האירועים `server/src/routes/incidents.js`; «עדכון שקט» מודגם בכפתור בלוח הבקרה |
-| 2 | ברירת מחדל עברית + הסברים | כל האתר RTL עברית (`web/app/layout.jsx`), עמוד `/guide` |
-| 3 | ניהול אדמין נוח | `/admin` — עריכת תוכן, מתנדבים, התראות, קונפיג |
-| 4 | עמוד בית: LoRa ב-3 שורות + דיאגרמה (LoRa+GPS / SMS) | `web/app/page.jsx` + `components/home/DistressFlowDiagram.jsx` |
-| 5 | עמוד מצוקה עם מיפוי הסביבה ומקור הקריאה | `/simulator` + תצוגת מוקד `/incident/[id]` |
-| 6 | הרשמה: שם פרטי חובה, משפחה רשות, נייד חובה, LoRa ID חובה | `/register` + ולידציה כפולה (client+server) |
-| 7 | HTML + Tailwind (רספונסיבי) | Tailwind בכל העמודים, תפריט מובייל |
-| 8 | זכאות: דפיברילטור עם/בלי LoRa, או LoRa בלבד | שלושת מסלולי ההרשמה + אכיפה ב-`registry.js` |
-| 9 | ~50 משתמשים רשומים, דגימה אקראית במפה, מיקום + זמן שידור אחרון | `server/src/seed.js` (50 מכשירים) + פיזור אקראי בכל קריאה |
-| 10 | פרמטר רדיוס בקונפיג + מסלולי אופניים (לא קו אווירי) | הגדרות סימולטור (אדמין) + ניתוב OSRM bike |
-| 11 | אדמין micha/1234 עם JWT + Refresh | `server/src/routes/auth.js` (רוטציית טוקנים מלאה) |
-| 12 | אדמין עורך עמודי שיווק + ניהול מרשם | עורך ה-CMS + טבלת מתנדבים ב-`/admin` |
-| 13 | קישור למאגר הדפיברילטורים של מד"א ולמפת «איפה דפי?» | Footer בכל עמוד + עמוד הבית + רצועת «ערוצים רשמיים» בכל מסך חירום (סימולטור, החייאה, מוקד) |
-| 14 | שיווק ≥3 חנויות LoRa בדגש 433MHz | עמוד `/shop` (LILYGO, Heltec, AliExpress) |
-| 15 | הרשמת לקוח ללא סיסמה + הסברים פשוטים | טופס ההרשמה — ללא סיסמה כלל |
-| טכנולוגיות | ‏2 מסדי נתונים (SQL+NoSQL), ‏2 שרתים (אחד Express עם JWT refresh) | SQLite+MongoDB · Express+Next.js |
-| בונוס (5 נק') | מסך הדרכת החייאה + דשבורד אנליטיקת זמני תגובה | `/cpr` (מטרונום 110BPM) + `/admin/analytics` |
+| 1 | Web distress simulator, no hardware | `/simulator` + the incident engine `server/src/routes/incidents.js`; the "silent update" is demoable via a button on the admin dashboard |
+| 2 | Hebrew default display + explanations | Entire site is RTL Hebrew (`web/app/layout.jsx`), `/guide` page |
+| 3 | Convenient admin maintenance | `/admin` — content editing, volunteers, alerts, config |
+| 4 | Home page: LoRa in 3 lines + diagram (LoRa+GPS / SMS) | `web/app/page.jsx` + `components/home/DistressFlowDiagram.jsx` |
+| 5 | Distress page mapping the surroundings + call source | `/simulator` + dispatch-center view `/incident/[id]` |
+| 6 | Registration: first name required, last name optional, mobile required, LoRa ID required | `/register` + double (client+server) validation |
+| 7 | HTML + Tailwind (responsive) | Tailwind on every page, mobile menu |
+| 8 | Eligibility: defib owner with/without LoRa, or LoRa-only | The three join tracks + enforcement in `registry.js` |
+| 9 | ~50 registered users, randomly sampled on the map, shown with location + last transmission time | `server/src/seed.js` (50 devices) + per-incident scatter |
+| 10 | Radius parameter in config + bike-path routing (not aerial lines) | Simulator settings (admin) + OSRM bike routing |
+| 11 | Admin micha/1234 with JWT + refresh | `server/src/routes/auth.js` (full token rotation) |
+| 12 | Admin edits marketing pages + manages the registry | CMS editor + volunteers table in `/admin` |
+| 13 | Link to MDA's national defibrillator registry | Footer + home page + official-channels strip |
+| 14 | Marketing of ≥3 LoRa shops, 433MHz emphasized | `/shop` (LILYGO, Heltec, RAKwireless, AliExpress) |
+| 15 | Client registration without a password + simple explanations | Registration form — no password at all |
+| Tech | 2 database types (SQL+NoSQL), 2 servers (one Express with JWT refresh) | SQLite+MongoDB · Express+Next.js |
+| Bonus (5 pts) | CPR guidance screen + response-time analytics dashboard | `/cpr` (110 BPM metronome) + `/admin/analytics` |
 
-## תרחיש קצה-לקצה (מה מדגים הסימולטור)
+## The end-to-end scenario (what the simulator demonstrates)
 
-1. **זיהוי:** לוחצים על המפה לבחירת נקודת אירוע ומפעילים קריאת מצוקה.
-2. **עיבוד:** השרת מפזר את 50 המכשירים סביב האירוע (דגימה אקראית), מחשב מרחקים,
-   ומדרג מועמדים בתוך הרדיוס לפי טריות השידור והמרחק.
-3. **הפצה:** לכל מועמד בתוך הרדיוס נרשמות התראות Push + SMS, ולנושאי LoRa גם פקודת
-   Downlink (מוצגת כהבהוב + צפצוף אמיתי ברמקול).
-4. **תגובה:** אישור הגעה מחשב מסלול אופניים אמיתי (OSRM) ומניע את המתנדב לאורכו,
-   עם "פירורי לחם" שנשלחים לשרת.
-5. **דיווח:** תצוגת המוקד (`/incident/[id]`) מציגה בזמן אמת את המרחק הנותר, ובסיום —
-   את זמן התגובה הכולל (שמזין את דשבורד האנליטיקה).
+1. **Identification:** click the map to place the incident and fire a distress call.
+2. **Processing:** the server scatters the 50 devices around the incident (random sampling),
+   computes distances, and ranks in-radius candidates by transmission freshness, then distance.
+3. **Distribution:** every in-radius candidate is logged with Push + SMS alerts; LoRa carriers also
+   get a downlink command (shown as a blinking badge with a real beep).
+4. **Response:** accepting the call fetches a real bike route (OSRM) and animates the volunteer
+   along it, streaming breadcrumbs to the server.
+5. **Reporting:** the dispatch-center view (`/incident/[id]`) shows the remaining distance live,
+   and on arrival — the total response time (which feeds the analytics dashboard).
 
-## פריסה לענן (עלות 0$)
+## Cloud deployment ($0 total)
 
-| רכיב | שירות | הערות |
+| Component | Service | Notes |
 |---|---|---|
-| Next.js (web) | Vercel (Free) | `NEXT_PUBLIC_API_URL` → כתובת ה-API ב-Render |
-| Express (server) | Render (Free) | משתני סביבה: `MONGODB_URI`, secrets, `CLIENT_ORIGIN`, `NODE_ENV=production` |
-| MongoDB | Atlas M0 (Free) | מחרוזת חיבור ל-`MONGODB_URI` |
-| SQLite | על דיסק ה-Render | נזרע אוטומטית בעלייה אם ריק |
+| Next.js (web) | Vercel (Free) | `NEXT_PUBLIC_API_URL` → the Render API address |
+| Express (server) | Render (Free) | Env vars: `MONGODB_URI`, secrets, `CLIENT_ORIGIN`, `NODE_ENV=production` |
+| MongoDB | Atlas M0 (Free) | Connection string in `MONGODB_URI` |
+| SQLite | On the Render disk | Auto-seeds on boot when empty |
 
-הוראות פריסה מפורטות צעד-אחר-צעד: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
-תוכן מוכן למצגת ההגנה (כולל שקף הבעיות הידועות): [docs/SLIDES.md](docs/SLIDES.md).
+Step-by-step deployment instructions: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+Ready-to-present slide deck (+ known-issues slide): [docs/SLIDES.md](docs/SLIDES.md).
 
-## בעיות ידועות (גילוי נאות)
+## Known issues (honest disclosure)
 
-- **Render Free "נרדם"** אחרי חוסר פעילות — הבקשה הראשונה עשויה לקחת ~30 שניות.
-- **SQLite בענן החינמי אינו מתמיד** — בכל Deploy מחדש הנתונים נזרעים מחדש (50 מכשירי
-  הדמו חוזרים; הרשמות אמיתיות בענן נשמרות רק עד ה-Deploy הבא). מקומית הכול נשמר.
-- **MongoDB מקומי** רץ דרך mongodb-memory-server עם תיקיית נתונים מתמידה
-  (`server/data/mongo`) — עריכות אדמין שורדות הפעלה מחדש. מחיקת התיקייה מאפסת לתוכן ברירת המחדל.
-- **שירות הניתוב** (OSRM הציבורי) תלוי בזמינות צד-שלישי; בעת כשל מוצג קו משוער והודעה.
-- רשימה מלאה ועדכנית — בשקופית «Known Issues» של המצגת.
+- **Render Free "sleeps"** after inactivity — the first request may take ~30 seconds.
+- **SQLite on the free cloud tier is not persistent** — every deploy re-seeds the data
+  (the 50 demo devices return; real cloud registrations survive only until the next deploy).
+  Locally everything persists.
+- **Local MongoDB** (mongodb-memory-server) keeps its data in a persistent local directory
+  (`server/data/mongo`) — admin edits survive restarts; deleting the directory resets to defaults.
+- **The routing service** (public OSRM) is a free third party; on failure the UI shows an
+  approximate straight line with a notice.
+- Full, current list — on the "Known Issues" slide of the deck.
 
-## מבנה הריפו
+## Repository layout
 
 ```
-├── server/          # Express API (פורט 4000)
+├── server/          # Express API (port 4000)
 │   └── src/
-│       ├── index.js, app.js          # אתחול + הרכבת הראוטרים
-│       ├── db/sqlite.js, db/mongo.js # שני מסדי הנתונים
+│       ├── index.js, app.js          # bootstrap + router mounting
+│       ├── db/sqlite.js, db/mongo.js # the two databases
 │       ├── routes/                   # auth · registry · incidents · telemetry · content · config
 │       ├── middleware/requireAdmin.js
-│       ├── seed.js                   # אדמין + 50 מכשירי דמו (דטרמיניסטי)
-│       └── data/default-content.js   # תוכן שיווקי התחלתי (נערך מה-אדמין)
-├── web/             # Next.js 15 + Tailwind (פורט 3000)
-│   ├── app/         # ראשי · guide · join · shop · maintenance · register · simulator · incident/[id] · cpr · admin
+│       ├── seed.js                   # admin + 50 demo devices (deterministic)
+│       └── data/default-content.js   # initial marketing content (admin-editable, Hebrew — site content)
+├── web/             # Next.js 15 + Tailwind (port 3000)
+│   ├── app/         # home · guide · join · shop · maintenance · register · simulator · incident/[id] · cpr · admin
 │   ├── components/  # UI kit · Nav/Footer · home · marketing · register · map · cpr · admin · analytics
-│   └── lib/         # api.js (כולל refresh אוטומטי) · format.js · sound.js
-└── docs/            # ARCHITECTURE.md · DEPLOYMENT.md
+│   └── lib/         # api.js (incl. auto-refresh) · format.js · sound.js
+└── docs/            # ARCHITECTURE.md · DEPLOYMENT.md · SLIDES.md · the defense deck
 ```

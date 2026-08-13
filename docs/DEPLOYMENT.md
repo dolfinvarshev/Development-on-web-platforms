@@ -1,67 +1,70 @@
-# פריסה לענן — צעד אחר צעד (עלות כוללת: 0$)
+# Cloud Deployment — step by step (total cost: $0)
 
-כל השירותים ברשימה חינמיים לחלוטין במסלולים בהם אנו משתמשים. סדר הפעולות חשוב:
-קודם מסד הנתונים, אחר כך ה-API, ולבסוף האתר.
+Every service below is genuinely free on the tiers we use. The order matters:
+database first, then the API, then the site.
 
-## שלב 0 — GitHub
+## Step 0 — GitHub
 
-1. ✅ בוצע — הריפו חי ב:
-   https://github.com/dolfinvarshev/Development-on-web-platforms
+✅ Done — the repository lives at:
+https://github.com/dolfinvarshev/Development-on-web-platforms
 
-## שלב 1 — MongoDB Atlas (NoSQL, חינם)
+## Step 1 — MongoDB Atlas (NoSQL, free)
 
-1. הרשמה ב-https://www.mongodb.com/cloud/atlas → צרו Cluster חינמי (M0, אזור קרוב).
-2. Database Access → צרו משתמש עם סיסמה.
-3. Network Access → Allow access from anywhere ‏(0.0.0.0/0).
-4. Connect → Drivers → העתיקו את מחרוזת החיבור (`mongodb+srv://...`) — זה יהיה
-   `MONGODB_URI` (החליפו `<password>` בסיסמה שיצרתם, והוסיפו שם DB: `/definet`).
+1. Sign up at https://www.mongodb.com/cloud/atlas → create a free **M0 cluster** (nearby region).
+2. *Database Access* → create a database user with a password.
+3. *Network Access* → Allow access from anywhere (0.0.0.0/0).
+4. *Connect → Drivers* → copy the connection string (`mongodb+srv://...`) — this becomes
+   `MONGODB_URI` (replace `<password>` with the real one and add the DB name: `/definet`).
 
-## שלב 2 — Render (שרת ה-Express, חינם)
+## Step 2 — Render (the Express server, free)
 
-1. הרשמה ב-https://render.com עם חשבון ה-GitHub → New → Web Service → בחרו את הריפו.
-2. הגדרות:
+1. Sign up at https://render.com with your GitHub account → New → Web Service → pick the repo.
+2. Settings:
    - **Root Directory:** `server`
    - **Build Command:** `npm install`
    - **Start Command:** `npm start`
    - **Instance Type:** Free
-3. Environment Variables:
+3. Environment variables:
    | Key | Value |
    |---|---|
    | `NODE_ENV` | `production` |
-   | `MONGODB_URI` | המחרוזת משלב 1 |
-   | `ACCESS_TOKEN_SECRET` | מחרוזת אקראית ארוכה (למשל מ-`openssl rand -hex 32`) |
-   | `REFRESH_TOKEN_SECRET` | מחרוזת אקראית ארוכה אחרת |
-   | `CLIENT_ORIGIN` | כתובת ה-Vercel משלב 3 (אפשר לעדכן אחרי) |
-4. Deploy → העתיקו את כתובת השירות (למשל `https://definet-api.onrender.com`).
-5. בדיקה: `https://<render-url>/api/health` צריך להחזיר `{"ok":true,...}`.
-   בעלייה ראשונה השרת זורע אוטומטית את האדמין ו-50 מכשירי הדמו.
+   | `MONGODB_URI` | the string from step 1 |
+   | `ACCESS_TOKEN_SECRET` | a long random string (e.g. from `openssl rand -hex 32`) |
+   | `REFRESH_TOKEN_SECRET` | a different long random string |
+   | `CLIENT_ORIGIN` | the Vercel address from step 3 (can be updated afterwards) |
+4. Deploy → copy the service URL (e.g. `https://definet-api.onrender.com`).
+5. Check: `https://<render-url>/api/health` must return `{"ok":true,...}`.
+   On first boot the server automatically seeds the admin + the 50 demo devices.
 
-## שלב 3 — Vercel (אתר ה-Next.js, חינם)
+> Note: the server **fails hard on boot** if `NODE_ENV=production` and the JWT secrets are
+> missing — that is intentional (never sign tokens with the public dev fallback).
 
-1. הרשמה ב-https://vercel.com עם חשבון ה-GitHub → Add New Project → בחרו את הריפו.
-2. הגדרות:
+## Step 3 — Vercel (the Next.js site, free)
+
+1. Sign up at https://vercel.com with your GitHub account → Add New Project → pick the repo.
+2. Settings:
    - **Root Directory:** `web`
-   - Framework Preset: Next.js (מזוהה אוטומטית)
-3. Environment Variables:
+   - Framework Preset: Next.js (auto-detected)
+3. Environment variables:
    | Key | Value |
    |---|---|
-   | `NEXT_PUBLIC_API_URL` | כתובת ה-Render משלב 2 (בלי `/` בסוף) |
-4. Deploy → קיבלתם כתובת (למשל `https://definet.vercel.app`).
-5. חזרו ל-Render ועדכנו את `CLIENT_ORIGIN` לכתובת ה-Vercel המדויקת (כולל `https://`,
-   בלי `/` בסוף) — זה מאפשר CORS + עוגיית ה-Refresh בין הדומיינים.
+   | `NEXT_PUBLIC_API_URL` | the Render URL from step 2 (no trailing `/`) |
+4. Deploy → you get an address (e.g. `https://definet.vercel.app`).
+5. Go back to Render and set `CLIENT_ORIGIN` to the exact Vercel address (including `https://`,
+   no trailing `/`) — this enables CORS + the cross-site refresh cookie.
 
-## שלב 4 — בדיקות קבלה בענן
+## Step 4 — Cloud acceptance checks
 
-- [ ] עמוד הבית נטען בעברית עם הדיאגרמה
-- [ ] הרשמה של משתמש חדש עובדת (`/register`)
-- [ ] הסימולטור יוצר אירוע, מדרג מועמדים ומצייר מסלול אופניים (`/simulator`)
-- [ ] כניסת אדמין `micha`/`1234` עובדת, עריכת תוכן נשמרת ומופיעה באתר (`/admin`)
-- [ ] דשבורד האנליטיקה מציג את האירוע שיצרתם (`/admin/analytics`)
+- [ ] The home page loads in Hebrew with the diagram
+- [ ] Registering a new user works (`/register`)
+- [ ] The simulator creates an incident, ranks candidates and draws a bike route (`/simulator`)
+- [ ] Admin login `micha`/`1234` works; a content edit saves and appears on the site (`/admin`)
+- [ ] The analytics dashboard shows the incident you created (`/admin/analytics`)
 
-## הערות חשובות
+## Important notes
 
-- **Render Free נרדם** אחרי ~15 דקות ללא תנועה; הבקשה הראשונה איטית (~30 שנ׳).
-  לפני הצגת הפרויקט — פתחו את `/api/health` דקה מראש כדי "להעיר" את השרת.
-- **SQLite על Render Free אינו מתמיד** בין Deploys — המערכת נזרעת מחדש אוטומטית
-  (מספיק ומצוין לצורכי הדמו וההגנה; מוצהר בשקופית הבעיות הידועות).
-- עדכנו את כתובת הענן וה-GitHub ב-README הראשי אחרי הפריסה.
+- **Render Free sleeps** after ~15 minutes of inactivity; the first request is slow (~30s).
+  Before presenting — open `/api/health` a minute in advance to wake the server.
+- **SQLite on Render Free does not persist** across deploys — the system re-seeds itself
+  automatically (fine for the demo and the defense; disclosed on the known-issues slide).
+- After deploying, update the cloud address in the main README and on slide 1 of the deck.
