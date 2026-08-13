@@ -189,7 +189,7 @@ POST `/api/incidents` `{lat!, lng!, radiusM?}` (public — the simulator/citizen
 ### Fleet & telemetry — `routes/telemetry.js` [B4]
 | GET `/api/devices` | public | `{devices:[{id,label,kind,hasDefib,hasLora,hasMagnus,battery,status,lat,lng,locationSource,lastSeen, owner:{firstName,lastName,phone,category}}]}` |
 | POST `/api/devices/:id/telemetry` `{battery?,lat?,lng?,channel?}` | simulated LoRa "tweet": update row + TelemetryLog; **battery crossing below 20 → AlertLog `maintenance_battery`** (only on crossing) | `{device, alert:null|log}` |
-| POST `/api/telemetry/tick` | public (demo): one silent-update cycle — LoRa/Magnus devices drain 0–2%, mobiles jitter ±300m, ~70% refresh last_seen, crossings alert | `{updated, alerts:[...]}` |
+| POST `/api/telemetry/tick` | public (demo button): one silent-update cycle — LoRa/Magnus devices drain 0–2%, mobiles jitter ±300m, ~70% refresh last_seen, crossings alert. The same cycle (`lib/silent-update.js`) also runs **autonomously** every `TELEMETRY_TICK_MINUTES` (default 60) from `index.js` — "without human intervention" per the registry requirement | `{updated, alerts:[...]}` |
 | GET `/api/alerts?limit=50` | admin | `{alerts:[AlertLog]}` |
 
 ### CMS content — `routes/content.js` [B4]
@@ -253,8 +253,10 @@ GET `/api/config` (public) → `{config}` · PUT `/api/config` (admin, partial) 
 
 ## 9. Environment variables
 
-Server: `PORT` (4000), `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET`, `MONGODB_URI` (optional →
-local persistent fallback), `CLIENT_ORIGIN` (CORS + cookies). Web: `NEXT_PUBLIC_API_URL`.
+Server: `PORT` (4000), `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET` (both via `lib/secrets.js`,
+fail-hard in production), `MONGODB_URI` (optional → local persistent fallback), `CLIENT_ORIGIN`
+(CORS + cookies), `TELEMETRY_TICK_MINUTES` (autonomous silent-update interval, default 60, 0 off).
+Web: `NEXT_PUBLIC_API_URL`.
 
 ## 10. Seed data (requirement 9)
 

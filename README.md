@@ -85,7 +85,7 @@ Full API contracts, schemas and design decisions: [docs/ARCHITECTURE.md](docs/AR
 
 | # | Requirement | Where it lives |
 |---|---|---|
-| 1 | Web distress simulator, no hardware | `/simulator` + the incident engine `server/src/routes/incidents.js`; the "silent update" is demoable via a button on the admin dashboard |
+| 1 | Web distress simulator, no hardware | `/simulator` + the incident engine `server/src/routes/incidents.js`; the "silent update" runs autonomously every hour (`TELEMETRY_TICK_MINUTES`) and on demand via the admin-dashboard button |
 | 2 | Hebrew default display + explanations | Entire site is RTL Hebrew (`web/app/layout.jsx`), `/guide` page |
 | 3 | Convenient admin maintenance | `/admin` — content editing, volunteers, alerts, config |
 | 4 | Home page: LoRa in 3 lines + diagram (LoRa+GPS / SMS) | `web/app/page.jsx` + `components/home/DistressFlowDiagram.jsx` |

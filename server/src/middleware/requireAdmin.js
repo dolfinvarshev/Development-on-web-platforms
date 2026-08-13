@@ -1,9 +1,6 @@
 // [B1] Bearer access-token guard for admin-only routes (docs/ARCHITECTURE.md §6).
 import jwt from 'jsonwebtoken';
-
-// dotenv is loaded as the very first import of the server entry point (src/index.js),
-// so reading the env at module scope is safe.
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'dev-access-secret-change-me';
+import { ACCESS_TOKEN_SECRET } from '../lib/secrets.js';
 
 /**
  * Verifies the "Authorization: Bearer <access token>" header.

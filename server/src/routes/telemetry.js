@@ -5,6 +5,12 @@ import { getDb } from '../db/sqlite.js';
 import { AlertLog, TelemetryLog } from '../db/mongo.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
 import { maskPhone } from '../lib/phone.js';
+import {
+  crossedLowBattery,
+  batteryAlertMessage,
+  serializeAlert,
+  runSilentUpdateCycle,
+} from '../lib/silent-update.js';
 
 const router = Router();
 
@@ -12,7 +18,6 @@ const router = Router();
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 const CHANNELS = ['lora', 'magnus', 'phone'];
-const LOW_BATTERY_THRESHOLD = 20;
 
 const DEVICE_SELECT = `
   SELECT d.id, d.label, d.kind, d.has_defib, d.has_lora, d.has_magnus, d.battery,
@@ -44,34 +49,6 @@ function mapDevice(row) {
       category: row.category,
     },
   };
-}
-
-function serializeAlert(doc) {
-  return {
-    id: String(doc._id),
-    type: doc.type,
-    deviceId: doc.deviceId,
-    deviceLabel: doc.deviceLabel,
-    incidentId: doc.incidentId ? String(doc.incidentId) : null,
-    message: doc.message,
-    createdAt: doc.createdAt,
-  };
-}
-
-// Maintenance alert fires only on the downward crossing of the 20% threshold, so a
-// device that keeps reporting 15%, 14%, 13%... alerts exactly once. `prev >= 20` is
-// false for NULL batteries, so unknown-battery devices never alert.
-function crossedLowBattery(prev, next) {
-  return (
-    typeof next === 'number' &&
-    next < LOW_BATTERY_THRESHOLD &&
-    prev !== null &&
-    prev >= LOW_BATTERY_THRESHOLD
-  );
-}
-
-function batteryAlertMessage(label, battery) {
-  return `סוללת המשדר של "${label}" ירדה ל-${battery}% — נשלחה התראת Push לבעל המכשיר`;
 }
 
 const isFiniteIn = (v, min, max) =>
@@ -143,76 +120,13 @@ router.post(
   })
 );
 
-// POST /api/telemetry/tick — one "silent update" cycle for the demo: every LoRa/MAGNUS
-// device drains a little battery, mobiles drift ~±300m, ~70% report in (fresh last_seen).
+// POST /api/telemetry/tick — one on-demand "silent update" cycle (the demo button).
+// The same cycle also runs autonomously on a server-side interval (see index.js),
+// which is what the spec's "without human intervention" clause describes.
 router.post(
   '/telemetry/tick',
   wrap(async (req, res) => {
-    const db = getDb();
-    const nowIso = new Date().toISOString();
-    const rows = db
-      .prepare(`SELECT * FROM devices WHERE has_lora = 1 OR has_magnus = 1`)
-      .all();
-
-    const updates = [];
-    const crossings = [];
-    const logs = [];
-
-    for (const row of rows) {
-      const battery =
-        row.battery === null
-          ? null
-          : Math.max(0, row.battery - Math.floor(Math.random() * 3));
-      let { lat, lng } = row;
-      if (row.kind === 'mobile' && lat !== null && lng !== null) {
-        lat += (Math.random() * 2 - 1) * 0.003;
-        lng += (Math.random() * 2 - 1) * 0.003;
-      }
-      const refreshed = Math.random() < 0.7;
-
-      updates.push({
-        id: row.id,
-        battery,
-        lat,
-        lng,
-        lastSeen: refreshed ? nowIso : row.last_seen,
-      });
-      if (crossedLowBattery(row.battery, battery)) {
-        crossings.push({ id: row.id, label: row.label, battery });
-      }
-      if (refreshed) {
-        logs.push({
-          deviceId: row.id,
-          // A tick tweet arrives over the device's usual channel; devices seeded before
-          // ever reporting have no location_source yet, so fall back to their best radio.
-          channel: row.location_source ?? (row.has_magnus ? 'magnus' : 'lora'),
-          battery,
-          lat,
-          lng,
-        });
-      }
-    }
-
-    const stmt = db.prepare(
-      `UPDATE devices SET battery = ?, lat = ?, lng = ?, last_seen = ? WHERE id = ?`
-    );
-    db.transaction(() => {
-      for (const u of updates) stmt.run(u.battery, u.lat, u.lng, u.lastSeen, u.id);
-    })();
-
-    if (logs.length) await TelemetryLog.insertMany(logs);
-    const alertDocs = crossings.length
-      ? await AlertLog.create(
-          crossings.map((c) => ({
-            type: 'maintenance_battery',
-            deviceId: c.id,
-            deviceLabel: c.label,
-            message: batteryAlertMessage(c.label, c.battery),
-          }))
-        )
-      : [];
-
-    res.json({ updated: updates.length, alerts: alertDocs.map(serializeAlert) });
+    res.json(await runSilentUpdateCycle());
   })
 );
 
