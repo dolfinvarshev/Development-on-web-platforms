@@ -15,6 +15,9 @@ dist/
 server/data/
 .mongodb-binaries/
 
+# course materials (copyrighted, local reference only — never push)
+materials/
+
 # private / not submitted (internal tests, defense prep)
 private/
 
