@@ -13,7 +13,7 @@
 **DefiNet (דפי-נט) — Smart Defibrillator Network**
 Course project — "Development on Web Platforms"
 
-- **Authors:** _[partner 1]_ · _[partner 2]_
+- **Authors:** Dolfin Varshev · Maayan Sandak
 - **GitHub:** https://github.com/dolfinvarshev/Development-on-web-platforms
 - **Cloud address:** https://development-on-web-platforms-web.vercel.app
 - **API:** https://definet-api.onrender.com

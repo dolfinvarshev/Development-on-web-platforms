@@ -15,7 +15,7 @@ service (Iridium network).
 > *(Vercel + Render + MongoDB Atlas — all free tiers, $0 total. The API sleeps when idle: open the
 > health check first and give it up to a minute to wake.)*
 >
-> 👥 **Authors:** _[partner names to be filled in]_
+> 👥 **Authors:** Dolfin Varshev · Maayan Sandak
 >
 > 🔑 **Admin login (for the course demo):** username `micha` · password `1234`
 >
