@@ -129,7 +129,8 @@ Ready-to-present slide deck (+ known-issues slide): [docs/SLIDES.md](docs/SLIDES
 
 ## Known issues (honest disclosure)
 
-- **Render Free "sleeps"** after inactivity — the first request may take ~30 seconds.
+- **Render Free "sleeps"** after inactivity — the first request after idle may be delayed by
+  **50 seconds or more** (Render's own warning for free instances).
 - **SQLite on the free cloud tier is not persistent** — every deploy re-seeds the data
   (the 50 demo devices return; real cloud registrations survive only until the next deploy).
   Locally everything persists.

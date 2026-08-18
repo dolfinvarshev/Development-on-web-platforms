@@ -25,7 +25,8 @@ Course project — "Development on Web Platforms"
 > Full disclosure — an issue discovered during the defense that was not declared here costs
 > significant points.
 
-1. **Render Free "sleeps"** after ~15 min of inactivity — the first API request is slow (~30s).
+1. **Render Free "sleeps"** after ~15 min of inactivity — the first API request can be delayed
+   **50 seconds or more** (Render's own figure for free instances).
    Demo workaround: open `/api/health` a minute in advance to wake the server.
 2. **SQLite on the free cloud tier is not persistent** — every deploy re-seeds the data
    (the 50 demo devices return). Locally everything persists.

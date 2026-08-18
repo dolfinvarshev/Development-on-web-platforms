@@ -63,7 +63,8 @@ https://github.com/dolfinvarshev/Development-on-web-platforms
 
 ## Important notes
 
-- **Render Free sleeps** after ~15 minutes of inactivity; the first request is slow (~30s).
+- **Render Free sleeps** after ~15 minutes of inactivity; the first request afterwards can take
+  50 seconds or more (Render's own warning).
   Before presenting — open `/api/health` a minute in advance to wake the server.
 - **SQLite on Render Free does not persist** across deploys — the system re-seeds itself
   automatically (fine for the demo and the defense; disclosed on the known-issues slide).
