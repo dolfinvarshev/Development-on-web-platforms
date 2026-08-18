@@ -8,7 +8,12 @@ service (Iridium network).
 
 > 📦 **GitHub:** https://github.com/dolfinvarshev/Development-on-web-platforms
 >
-> 🌐 **Cloud address:** _to be updated after deployment_ (Vercel + Render + MongoDB Atlas — all free tiers)
+> 🌐 **Live site:** https://development-on-web-platforms-web.vercel.app
+>
+> 🔌 **Live API:** https://definet-api.onrender.com ([health check](https://definet-api.onrender.com/api/health))
+>
+> *(Vercel + Render + MongoDB Atlas — all free tiers, $0 total. The API sleeps when idle: open the
+> health check first and give it up to a minute to wake.)*
 >
 > 👥 **Authors:** _[partner names to be filled in]_
 >

@@ -15,7 +15,8 @@ Course project — "Development on Web Platforms"
 
 - **Authors:** _[partner 1]_ · _[partner 2]_
 - **GitHub:** https://github.com/dolfinvarshev/Development-on-web-platforms
-- **Cloud address:** _[https://<app>.vercel.app]_ (API: _[https://<api>.onrender.com]_)
+- **Cloud address:** https://development-on-web-platforms-web.vercel.app
+- **API:** https://definet-api.onrender.com
 - **Admin login for the demo:** `micha` / `1234`
 
 ---
