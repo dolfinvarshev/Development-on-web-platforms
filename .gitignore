@@ -25,3 +25,6 @@ private/
 *.log
 .DS_Store
 .vercel
+
+# Office lock/temp files (created while a doc is open)
+~$*
