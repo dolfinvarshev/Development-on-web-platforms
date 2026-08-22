@@ -3,8 +3,10 @@
 > Ready-to-present content (PowerPoint / Google Slides). Slide structure follows the
 > submission requirements.
 >
-> **Generated deck file:** [DefiNet-Defense-Deck.pptx](DefiNet-Defense-Deck.pptx) — 6 slides, English.
-> Still to fill in: author names, GitHub URL is set, cloud URL after deployment (slide 1).
+> **Final deck file:** [DefiNet-Defense-Deck.pptx](DefiNet-Defense-Deck.pptx) — 5 slides, **Hebrew**,
+> merged from both partners' versions: student IDs, both GitHub repos, QR to the live site, both
+> cloud URLs, admin demo credentials, and full code samples. Every slide was verified by rendering
+> it to an image and inspecting it. This English file remains as reference content only.
 
 ---
 
