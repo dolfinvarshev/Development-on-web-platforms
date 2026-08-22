@@ -3,10 +3,10 @@
 > Ready-to-present content (PowerPoint / Google Slides). Slide structure follows the
 > submission requirements.
 >
-> **Final deck file:** [DefiNet-Defense-Deck.pptx](DefiNet-Defense-Deck.pptx) - 4 slides, English,
+> **Final deck file:** [DefiNet-Defense-Deck.pptx](DefiNet-Defense-Deck.pptx) - 5 slides, English,
 > plain punctuation. Page 1: submitters with IDs, both GitHub repos, both cloud URLs, admin demo
 > login and a QR to the live site. Page 2: summary and technologies. Page 3: known issues.
-> Page 4: architecture. Every slide was verified by rendering it to an image and inspecting it.
+> Page 4: architecture. Page 5: key code samples. Every slide was verified by rendering it to an image and inspecting it.
 
 ---
 
